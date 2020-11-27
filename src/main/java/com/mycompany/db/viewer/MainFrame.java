@@ -1,21 +1,28 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.mycompany.db.viewer;
 
-/**
- *
- * @author Jonay
- */
+import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+
+
 public class MainFrame extends javax.swing.JFrame {
+
+    private final Database db;
 
     /**
      * Creates new form MainFrame
      */
     public MainFrame() {
         initComponents();
+        
+        this.db = Database.getInstance();
     }
 
     /**
@@ -27,7 +34,25 @@ public class MainFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        menuBar = new javax.swing.JMenuBar();
+        connectionMenu = new javax.swing.JMenu();
+        connectMenuItem = new javax.swing.JMenuItem();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        connectionMenu.setText("Conexión");
+
+        connectMenuItem.setText("Conectar");
+        connectMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                connectMenuItemActionPerformed(evt);
+            }
+        });
+        connectionMenu.add(connectMenuItem);
+
+        menuBar.add(connectionMenu);
+
+        setJMenuBar(menuBar);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -37,11 +62,42 @@ public class MainFrame extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGap(0, 279, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void connectMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_connectMenuItemActionPerformed
+        JPanel loginForm = new JPanel();
+        loginForm.setLayout(new BoxLayout(loginForm, BoxLayout.Y_AXIS));
+        
+        loginForm.add(new JLabel("Usuario"));
+        JTextField usernameTextField = new JTextField(5);
+        loginForm.add(usernameTextField);
+        
+        loginForm.add(new JLabel("Contraseña"));
+        JPasswordField passwordField = new JPasswordField(5);
+        loginForm.add(passwordField);
+        
+        Object[] choices = {"Conectar", "Cancelar"};
+        int res = JOptionPane.showOptionDialog(this, loginForm, "Conectar", 
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE, 
+                null, choices, null);
+        
+        if( res == JOptionPane.YES_OPTION ){
+            try {
+                String[] tables = this.db.connect(usernameTextField.getText(),
+                        new String(passwordField.getPassword()));
+                for (String table : tables) {
+                    System.out.println(table);
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_connectMenuItemActionPerformed
 
     /**
      * @param args the command line arguments
@@ -79,5 +135,8 @@ public class MainFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuItem connectMenuItem;
+    private javax.swing.JMenu connectionMenu;
+    private javax.swing.JMenuBar menuBar;
     // End of variables declaration//GEN-END:variables
 }
