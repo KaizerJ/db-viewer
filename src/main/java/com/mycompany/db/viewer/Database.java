@@ -61,10 +61,37 @@ public class Database {
             tablesList.add(rs.getString("TABLE_NAME"));
         }
         
-        con.close();
-        
         String[] tablesArray = new String[tablesList.size()];
         tablesArray = tablesList.toArray(tablesArray);
         return tablesArray;
+    }
+
+    public String[] getFields(String tableName) {
+        try {
+            ResultSet fields = this.md.getColumns(null, null, tableName, null);
+            
+            List<String> columns = new ArrayList<>();
+            while (fields.next()) {
+                String fieldName = fields.getString("COLUMN_NAME");
+                columns.add(fieldName);
+            }
+            
+            return columns.toArray(new String[0]);
+        } catch (SQLException ex) {
+            //Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
+            String[] error = {"Error con tabla : " + tableName};
+            return error;
+        }
+    }
+    
+    public void disconnect(){
+        if( con != null ){
+            try {
+                con.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            con = null;
+        }
     }
 }

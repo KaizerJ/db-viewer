@@ -1,20 +1,20 @@
 package com.mycompany.db.viewer;
 
 import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.BoxLayout;
+import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 
 
 public class MainFrame extends javax.swing.JFrame {
 
     private final Database db;
+    private DefaultListModel<String> tableListModel;
 
     /**
      * Creates new form MainFrame
@@ -34,11 +34,116 @@ public class MainFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        SelectionbuttonGroup = new javax.swing.ButtonGroup();
+        tableListScrollPane = new javax.swing.JScrollPane();
+        tableList = new javax.swing.JList<>();
+        fieldListScrollPane = new javax.swing.JScrollPane();
+        fieldList = new javax.swing.JList<>();
+        buttonPanel = new javax.swing.JPanel();
+        simpleToggleButton = new javax.swing.JToggleButton();
+        intervalToggleButton = new javax.swing.JToggleButton();
+        multipleIntervalToggleButton = new javax.swing.JToggleButton();
+        unselectAllTablesButton = new javax.swing.JButton();
+        unselectAllFieldsButton = new javax.swing.JButton();
+        showFieldsButton = new javax.swing.JButton();
         menuBar = new javax.swing.JMenuBar();
         connectionMenu = new javax.swing.JMenu();
         connectMenuItem = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Visualizador de base de datos");
+        setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosed(java.awt.event.WindowEvent evt) {
+                formWindowClosed(evt);
+            }
+        });
+
+        tableList.setBorder(javax.swing.BorderFactory.createTitledBorder("Tablas"));
+        tableList.setModel(new javax.swing.AbstractListModel<String>() {
+            String[] strings = { "Conexión > Conectar para mostrar" };
+            public int getSize() { return strings.length; }
+            public String getElementAt(int i) { return strings[i]; }
+        });
+        tableListScrollPane.setViewportView(tableList);
+
+        fieldList.setBorder(javax.swing.BorderFactory.createTitledBorder("Campos"));
+        fieldList.setModel(new javax.swing.AbstractListModel<String>() {
+            String[] strings = { "Selecciona una tabla para mostrar" };
+            public int getSize() { return strings.length; }
+            public String getElementAt(int i) { return strings[i]; }
+        });
+        fieldListScrollPane.setViewportView(fieldList);
+
+        buttonPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Tipos de selección"));
+
+        SelectionbuttonGroup.add(simpleToggleButton);
+        simpleToggleButton.setText("Simple");
+        simpleToggleButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                simpleToggleButtonActionPerformed(evt);
+            }
+        });
+
+        SelectionbuttonGroup.add(intervalToggleButton);
+        intervalToggleButton.setText("Intervalo");
+        intervalToggleButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                intervalToggleButtonActionPerformed(evt);
+            }
+        });
+
+        SelectionbuttonGroup.add(multipleIntervalToggleButton);
+        multipleIntervalToggleButton.setSelected(true);
+        multipleIntervalToggleButton.setText("Múltiples Intervalos");
+        multipleIntervalToggleButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                multipleIntervalToggleButtonActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout buttonPanelLayout = new javax.swing.GroupLayout(buttonPanel);
+        buttonPanel.setLayout(buttonPanelLayout);
+        buttonPanelLayout.setHorizontalGroup(
+            buttonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(multipleIntervalToggleButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(simpleToggleButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(intervalToggleButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        buttonPanelLayout.setVerticalGroup(
+            buttonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(buttonPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(simpleToggleButton)
+                .addGap(29, 29, 29)
+                .addComponent(intervalToggleButton)
+                .addGap(29, 29, 29)
+                .addComponent(multipleIntervalToggleButton)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        unselectAllTablesButton.setText("Deseleccionar todo");
+        unselectAllTablesButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                unselectAllTablesButtonActionPerformed(evt);
+            }
+        });
+
+        unselectAllFieldsButton.setText("Deseleccionar todo");
+        unselectAllFieldsButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                unselectAllFieldsButtonActionPerformed(evt);
+            }
+        });
+
+        showFieldsButton.setBackground(new java.awt.Color(102, 255, 102));
+        showFieldsButton.setText("Mostrar Campos");
+        showFieldsButton.setEnabled(false);
+        showFieldsButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                showFieldsButtonActionPerformed(evt);
+            }
+        });
 
         connectionMenu.setText("Conexión");
 
@@ -58,17 +163,48 @@ public class MainFrame extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(tableListScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(buttonPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(showFieldsButton))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 39, Short.MAX_VALUE)
+                        .addComponent(fieldListScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(unselectAllTablesButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(unselectAllFieldsButton)))
+                .addGap(19, 19, 19))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 279, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(tableListScrollPane)
+                    .addComponent(fieldListScrollPane)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(buttonPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
+                        .addComponent(showFieldsButton)
+                        .addGap(11, 11, 11)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(unselectAllTablesButton)
+                    .addComponent(unselectAllFieldsButton))
+                .addGap(27, 27, 27))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void connectMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_connectMenuItemActionPerformed
+        //Borrar lo que hay antes de conectar
+        
         JPanel loginForm = new JPanel();
         loginForm.setLayout(new BoxLayout(loginForm, BoxLayout.Y_AXIS));
         
@@ -90,14 +226,59 @@ public class MainFrame extends javax.swing.JFrame {
             try {
                 String[] tables = this.db.connect(usernameTextField.getText(),
                         new String(passwordField.getPassword()));
+                
+                this.tableListModel = new DefaultListModel<String>();
+                this.tableList.setModel(tableListModel);
                 for (String table : tables) {
-                    System.out.println(table);
+                    this.tableListModel.addElement(table);
                 }
+                this.showFieldsButton.setEnabled(true);
             } catch (SQLException ex) {
-                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                //Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                JOptionPane.showMessageDialog(this, ex.getMessage(), 
+                        "Error al conectar", JOptionPane.ERROR_MESSAGE);
             }
         }
     }//GEN-LAST:event_connectMenuItemActionPerformed
+
+    private void unselectAllTablesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_unselectAllTablesButtonActionPerformed
+        this.tableList.clearSelection();
+    }//GEN-LAST:event_unselectAllTablesButtonActionPerformed
+
+    private void unselectAllFieldsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_unselectAllFieldsButtonActionPerformed
+        this.fieldList.clearSelection();
+    }//GEN-LAST:event_unselectAllFieldsButtonActionPerformed
+
+    private void showFieldsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showFieldsButtonActionPerformed
+        int[] selectedIndices = this.tableList.getSelectedIndices();
+        
+        DefaultListModel<String> fieldsListModel = new DefaultListModel<String>();
+        for (int selectedIndex : selectedIndices) {
+            String tableName = this.tableListModel.get(selectedIndex);
+            
+            String[] fields = this.db.getFields(tableName);
+            for (String field : fields) {
+                fieldsListModel.addElement(tableName + "." + field);
+            }
+        }
+        this.fieldList.setModel(fieldsListModel);
+    }//GEN-LAST:event_showFieldsButtonActionPerformed
+
+    private void simpleToggleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_simpleToggleButtonActionPerformed
+        this.tableList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    }//GEN-LAST:event_simpleToggleButtonActionPerformed
+
+    private void intervalToggleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_intervalToggleButtonActionPerformed
+        this.tableList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+    }//GEN-LAST:event_intervalToggleButtonActionPerformed
+
+    private void multipleIntervalToggleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_multipleIntervalToggleButtonActionPerformed
+        this.tableList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+    }//GEN-LAST:event_multipleIntervalToggleButtonActionPerformed
+
+    private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
+        this.db.disconnect();
+    }//GEN-LAST:event_formWindowClosed
 
     /**
      * @param args the command line arguments
@@ -135,8 +316,20 @@ public class MainFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.ButtonGroup SelectionbuttonGroup;
+    private javax.swing.JPanel buttonPanel;
     private javax.swing.JMenuItem connectMenuItem;
     private javax.swing.JMenu connectionMenu;
+    private javax.swing.JList<String> fieldList;
+    private javax.swing.JScrollPane fieldListScrollPane;
+    private javax.swing.JToggleButton intervalToggleButton;
     private javax.swing.JMenuBar menuBar;
+    private javax.swing.JToggleButton multipleIntervalToggleButton;
+    private javax.swing.JButton showFieldsButton;
+    private javax.swing.JToggleButton simpleToggleButton;
+    private javax.swing.JList<String> tableList;
+    private javax.swing.JScrollPane tableListScrollPane;
+    private javax.swing.JButton unselectAllFieldsButton;
+    private javax.swing.JButton unselectAllTablesButton;
     // End of variables declaration//GEN-END:variables
 }
