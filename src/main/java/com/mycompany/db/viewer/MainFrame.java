@@ -46,9 +46,13 @@ public class MainFrame extends javax.swing.JFrame {
         unselectAllTablesButton = new javax.swing.JButton();
         unselectAllFieldsButton = new javax.swing.JButton();
         showFieldsButton = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
         menuBar = new javax.swing.JMenuBar();
         connectionMenu = new javax.swing.JMenu();
         connectMenuItem = new javax.swing.JMenuItem();
+        jSeparator1 = new javax.swing.JPopupMenu.Separator();
+        disconnectMenuItem = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Visualizador de base de datos");
@@ -145,6 +149,10 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
 
+        jLabel1.setText("Jonay Suárez Ramírez");
+
+        jLabel2.setText("Samuel Trujillo Santana");
+
         connectionMenu.setText("Conexión");
 
         connectMenuItem.setText("Conectar");
@@ -154,6 +162,15 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
         connectionMenu.add(connectMenuItem);
+        connectionMenu.add(jSeparator1);
+
+        disconnectMenuItem.setText("Desconectar");
+        disconnectMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                disconnectMenuItemActionPerformed(evt);
+            }
+        });
+        connectionMenu.add(disconnectMenuItem);
 
         menuBar.add(connectionMenu);
 
@@ -166,19 +183,26 @@ public class MainFrame extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(tableListScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(unselectAllTablesButton))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(tableListScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(buttonPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(showFieldsButton))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 39, Short.MAX_VALUE)
                         .addComponent(fieldListScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(unselectAllTablesButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(unselectAllFieldsButton)))
                 .addGap(19, 19, 19))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(160, 160, 160)
+                .addComponent(jLabel1)
+                .addGap(36, 36, 36)
+                .addComponent(jLabel2)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -196,15 +220,17 @@ public class MainFrame extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(unselectAllTablesButton)
                     .addComponent(unselectAllFieldsButton))
-                .addGap(27, 27, 27))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel2))
+                .addGap(7, 7, 7))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void connectMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_connectMenuItemActionPerformed
-        //Borrar lo que hay antes de conectar
-        
         JPanel loginForm = new JPanel();
         loginForm.setLayout(new BoxLayout(loginForm, BoxLayout.Y_AXIS));
         
@@ -224,6 +250,9 @@ public class MainFrame extends javax.swing.JFrame {
         
         if( res == JOptionPane.YES_OPTION ){
             try {
+                //Borrar lo que hay antes de conectar
+                resetAppState();
+                
                 String[] tables = this.db.connect(usernameTextField.getText(),
                         new String(passwordField.getPassword()));
                 
@@ -280,6 +309,10 @@ public class MainFrame extends javax.swing.JFrame {
         this.db.disconnect();
     }//GEN-LAST:event_formWindowClosed
 
+    private void disconnectMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_disconnectMenuItemActionPerformed
+        resetAppState();
+    }//GEN-LAST:event_disconnectMenuItemActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -320,9 +353,13 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JPanel buttonPanel;
     private javax.swing.JMenuItem connectMenuItem;
     private javax.swing.JMenu connectionMenu;
+    private javax.swing.JMenuItem disconnectMenuItem;
     private javax.swing.JList<String> fieldList;
     private javax.swing.JScrollPane fieldListScrollPane;
     private javax.swing.JToggleButton intervalToggleButton;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JToggleButton multipleIntervalToggleButton;
     private javax.swing.JButton showFieldsButton;
@@ -332,4 +369,19 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JButton unselectAllFieldsButton;
     private javax.swing.JButton unselectAllTablesButton;
     // End of variables declaration//GEN-END:variables
+
+    private void resetAppState() {
+        this.db.disconnect();
+        
+        this.tableListModel = null;
+        DefaultListModel<String> defaultListModel = new DefaultListModel<String>();
+        defaultListModel.addElement("Conexión > Conectar para mostrar");
+        this.tableList.setModel(defaultListModel);
+        
+        DefaultListModel<String> defaultListModel2 = new DefaultListModel<String>();
+        defaultListModel2.addElement("Selecciona una tabla para mostrar");
+        this.fieldList.setModel(defaultListModel2);
+        
+        this.showFieldsButton.setEnabled(false);
+    }
 }
